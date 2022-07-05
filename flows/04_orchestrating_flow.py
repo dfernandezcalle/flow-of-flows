@@ -8,6 +8,8 @@ STORAGE = GitHub(
     repo="dfernandezcalle/flow-of-flows",
     path=f"flows/{FLOW_NAME}.py",
     access_token_secret="GITHUB_ACCESS_TOKEN",
+    ref="develop"
+
 )
 PROJECT_NAME = "jaffle_shop"
 start_flow_run = StartFlowRun(project_name=PROJECT_NAME, wait=True)
