@@ -91,7 +91,7 @@ with Flow(FLOW_NAME, storage=STORAGE, run_config=LocalRun(labels=["dev"])) as fl
     dbt_test_out = print_dbt_output(dbt_test, task_args={"name": "DBT Test Output"})
     dbt_run.set_downstream(dbt_test)
 
-    del_again = delete_dbt_folder_if_exists()
+    #del_again = delete_dbt_folder_if_exists()
     dbt_test_out.set_downstream(del_again)
 
 flow.set_reference_tasks([dbt_run])
