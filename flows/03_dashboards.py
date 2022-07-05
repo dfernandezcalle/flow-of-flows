@@ -5,7 +5,7 @@ from prefect.run_configs import LocalRun
 
 FLOW_NAME = "03_dashboards"
 STORAGE = GitHub(
-    repo="anna-geller/flow-of-flows",
+    repo="dfernandezcalle/flow-of-flows",
     path=f"flows/{FLOW_NAME}.py",
     access_token_secret="GITHUB_ACCESS_TOKEN",
 )

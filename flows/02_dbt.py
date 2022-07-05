@@ -16,7 +16,7 @@ from prefect.tasks.secrets import PrefectSecret
 DBT_PROJECT = "jaffle_shop"
 FLOW_NAME = "02_dbt"
 STORAGE = GitHub(
-    repo="anna-geller/flow-of-flows",
+    repo="dfernandezcalle/flow-of-flows",
     path=f"flows/{FLOW_NAME}.py",
     access_token_secret="GITHUB_ACCESS_TOKEN",
 )
@@ -40,7 +40,7 @@ def get_dbt_credentials(user_name: str, password: str):
 dbt = DbtShellTask(
     return_all=True,
     profile_name=DBT_PROJECT,
-    profiles_dir="/Users/anna/.dbt",
+    profiles_dir="./dbt",
     environment="dev",
     overwrite_profiles=True,
     log_stdout=True,
@@ -49,7 +49,7 @@ dbt = DbtShellTask(
     dbt_kwargs={
         "type": "postgres",
         "host": "localhost",
-        "port": 5432,
+        "port": 5433,
         "dbname": "postgres",
         "schema": DBT_PROJECT,
         "threads": 4,
@@ -69,7 +69,7 @@ with Flow(FLOW_NAME, storage=STORAGE, run_config=LocalRun(labels=["dev"])) as fl
 
     del_task = delete_dbt_folder_if_exists()
     dbt_repo = Parameter(
-        "dbt_repo_url", default="https://github.com/anna-geller/jaffle_shop"
+        "dbt_repo_url", default="https://github.com/dfernandezcalle/jaffle_shop"
     )
     dbt_repo_branch = Parameter("dbt_repo_branch", default=None)
     pull_task = pull_dbt_repo(dbt_repo, dbt_repo_branch)

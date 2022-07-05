@@ -6,7 +6,7 @@ jaffle_shop:
       dbname: postgres
       host: localhost
       password: your_password_1234
-      port: 5432
+      port: 5433
       schema: jaffle_shop
       threads: 4
       type: postgres

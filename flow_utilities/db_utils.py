@@ -1,6 +1,6 @@
 """
 Using local DB in docker:
-docker run -d --name demo_postgres -v dbdata:/var/lib/postgresql/data -p 5432:5432 -e POSTGRES_PASSWORD=xyz postgres:11
+docker run -d --name demo_postgres -v dbdata:/var/lib/postgresql/data -p 5433:5432 -e POSTGRES_PASSWORD=xyz postgres:11
 """
 import pandas as pd
 from prefect.client import Secret
@@ -10,7 +10,7 @@ from sqlalchemy import create_engine
 def get_db_connection_string() -> str:
     user = Secret("POSTGRES_USER").get()
     pwd = Secret("POSTGRES_PASS").get()
-    return f"postgresql://{user}:{pwd}@localhost:5432/postgres"
+    return f"postgresql://{user}:{pwd}@localhost:5433/postgres"
 
 
 def get_df_from_sql_query(table_or_query: str) -> pd.DataFrame:
@@ -23,6 +23,7 @@ def load_df_to_db(df: pd.DataFrame, table_name: str, schema: str = "jaffle_shop"
     conn_string = get_db_connection_string()
     db_engine = create_engine(conn_string)
     conn = db_engine.connect()
+    conn.execute("LOCK TABLE pg_catalog.pg_namespace;") #not recommended
     conn.execute("CREATE SCHEMA IF NOT EXISTS jaffle_shop;")
     conn.execute(f"DROP TABLE IF EXISTS {schema}.{table_name} CASCADE;")
     df.to_sql(table_name, schema=schema, con=db_engine, index=False)

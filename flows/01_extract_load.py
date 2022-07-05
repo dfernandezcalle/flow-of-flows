@@ -9,7 +9,7 @@ from prefect.storage import GitHub
 
 FLOW_NAME = "01_extract_load"
 STORAGE = GitHub(
-    repo="anna-geller/flow-of-flows",
+    repo="dfernandezcalle/flow-of-flows",
     path=f"flows/{FLOW_NAME}.py",
     access_token_secret="GITHUB_ACCESS_TOKEN",
 )
