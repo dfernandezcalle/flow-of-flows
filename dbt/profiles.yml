@@ -1,4 +1,3 @@
-# Inlude this file in: /Users/your_user_name/.dbt/profiles.yml
 jaffle_shop:
   outputs:
     dev:
