@@ -41,7 +41,7 @@ def get_dbt_credentials(user_name: str, password: str):
 dbt = DbtShellTask(
     return_all=True,
     profile_name=DBT_PROJECT,
-    profiles_dir="./dbt",
+    profiles_dir="/Users/dfer/.dbt",
     environment="dev",
     overwrite_profiles=True,
     log_stdout=True,
@@ -91,7 +91,7 @@ with Flow(FLOW_NAME, storage=STORAGE, run_config=LocalRun(labels=["dev"])) as fl
     dbt_test_out = print_dbt_output(dbt_test, task_args={"name": "DBT Test Output"})
     dbt_run.set_downstream(dbt_test)
 
-    #del_again = delete_dbt_folder_if_exists()
-    #dbt_test_out.set_downstream(del_again)
+    del_again = delete_dbt_folder_if_exists()
+    dbt_test_out.set_downstream(del_again)
 
 flow.set_reference_tasks([dbt_run])
