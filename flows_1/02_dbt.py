@@ -17,7 +17,7 @@ DBT_PROJECT = "jaffle_shop"
 FLOW_NAME = "02_dbt"
 STORAGE = GitHub(
     repo="dfernandezcalle/flow-of-flows",
-    path=f"flows/{FLOW_NAME}.py",
+    path=f"flows_1/{FLOW_NAME}.py",
     access_token_secret="GITHUB_ACCESS_TOKEN",
     ref="develop"
 )

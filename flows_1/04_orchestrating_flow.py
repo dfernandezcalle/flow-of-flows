@@ -6,7 +6,7 @@ from prefect.run_configs import LocalRun
 FLOW_NAME = "04_orchestrating_flow"
 STORAGE = GitHub(
     repo="dfernandezcalle/flow-of-flows",
-    path=f"flows/{FLOW_NAME}.py",
+    path=f"flows_1/{FLOW_NAME}.py",
     access_token_secret="GITHUB_ACCESS_TOKEN",
     ref="develop"
 
