@@ -45,14 +45,13 @@ export PREFECT__CONTEXT__SECRETS__SNOWFLAKE_ROLE=
 """
 
 
-def get_snowflake_connection_string(database: str) -> str:
+def get_snowflake_connection_string(database: str = Secret("SNOWFLAKE_DATABASE").get()) -> str:
     user = Secret("SNOWFLAKE_USER").get()
     pwd = Secret("SNOWFLAKE_PASS").get()
     account_id = Secret("SNOWFLAKE_ACCOUNT_ID").get()
-    schema = "JAFFLE_SHOP"
     warehouse = Secret("SNOWFLAKE_WAREHOUSE").get()
     role = Secret("SNOWFLAKE_ROLE").get()
-    return f"snowflake://{user}:{pwd}@{account_id}/{database}/{schema}?warehouse={warehouse}&role={role}"
+    return f"snowflake://{user}:{pwd}@{account_id}/{database}/JAFFLE_SHOP?warehouse={warehouse}&role={role}"
 
 
 def get_df_from_sql_query(table_or_query: str) -> pd.DataFrame:
@@ -65,15 +64,15 @@ def load_df_to_snowflake(df: pd.DataFrame, table_name: str, schema: str = "JAFFL
     conn_string = get_snowflake_connection_string()
     db_engine = create_engine(conn_string)
     conn = db_engine.connect()
-    # conn.execute(f"TRUNCATE TABLE {database}.{schema}.{table_name};")
+    # conn.execute(f"TRUNCATE TABLE DEV.{schema}.{table_name};")
     df.to_sql(table_name, schema=schema, con=db_engine, if_exists="replace", index=False)
     conn.close()
 
 
 @resource_manager
 class SnowflakeConnection:
-    def __init__(self):
-        self.database = Secret("SNOWFLAKE_DATABASE").get()
+    def __init__(self, database: str = Secret("SNOWFLAKE_DATABASE").get()):
+        self.database = database
 
     def setup(self):
         db_conn_string = get_snowflake_connection_string(self.database)
