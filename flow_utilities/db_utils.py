@@ -66,6 +66,7 @@ def load_df_to_snowflake(df: pd.DataFrame, table_name: str, schema: str = "JAFFL
     conn_string = get_snowflake_connection_string()
     db_engine = create_engine(conn_string)
     conn = db_engine.connect()
+    conn.execute("USE DATABASE TABLE {database};")
     conn.execute(f"TRUNCATE TABLE {database}.{schema}.{table_name};")
     df.to_sql(table_name, schema=schema, con=db_engine, if_exists="replace", index=False)
     conn.close()
