@@ -30,7 +30,7 @@ def load_df_to_db(df: pd.DataFrame, table_name: str, schema: str = "jaffle_shop"
     conn = db_engine.connect()
     conn.execute("LOCK TABLE pg_catalog.pg_namespace;") #not recommended
     conn.execute("CREATE SCHEMA IF NOT EXISTS jaffle_shop;")
-    conn.execute(f"DROP TABLE IF EXISTS {schema}.{table_name} CASCADE;")
+    #conn.execute(f"DROP TABLE IF EXISTS {schema}.{table_name} CASCADE;")
     df.to_sql(table_name, schema=schema, con=db_engine, index=False)
     conn.close()
 
