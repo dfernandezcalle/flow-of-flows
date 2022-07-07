@@ -13,7 +13,7 @@ from prefect.tasks.secrets import PrefectSecret
 
 
 DBT_PROJECT = "jaffle_shop"
-FLOW_NAME = "06_dbt_snowflake"
+FLOW_NAME = "02_dbt_snowflake"
 
 
 @task(name="Clone DBT repo")
@@ -27,14 +27,12 @@ def delete_dbt_folder_if_exists():
 
 
 @task
-def get_dbt_credentials(user_name: str, password: str, role: str, account_id: str, database: str, warehouse: str):
+def get_dbt_credentials(user_name: str, password: str, role: str, account_id: str):
     return {
         "user": user_name,
         "password": password,
         "role": role,
         "account": account_id,
-        "database": database,
-        "warehouse": warehouse
     }
 
 
@@ -49,8 +47,8 @@ dbt = DbtShellTask(
     dbt_kwargs={
         "type": "snowflake",
         "schema": DBT_PROJECT,
-        "database": PrefectSecret("SNOWFLAKE_DATABASE"),
-        "warehouse": PrefectSecret("SNOWFLAKE_WAREHOUSE"),
+        "database": "DEV",
+        "warehouse": "COMPUTE_WH",
         "threads": 4,
         "client_session_keep_alive": False,
     },
@@ -69,7 +67,7 @@ with Flow(
 ) as flow:
     del_task = delete_dbt_folder_if_exists()
     dbt_repo = Parameter(
-        "dbt_repo_url", default="https://github.com/dfernandezcalle/jaffle_shop"
+        "dbt_repo_url", default="https://github.com/anna-geller/jaffle_shop"
     )
     pull_task = pull_dbt_repo(dbt_repo)
     del_task.set_downstream(pull_task)
@@ -78,15 +76,11 @@ with Flow(
     snowflake_pass = PrefectSecret("SNOWFLAKE_PASS")
     snowflake_role = PrefectSecret("SNOWFLAKE_ROLE")
     snowflake_accid = PrefectSecret("SNOWFLAKE_ACCOUNT_ID")
-    snowflake_database =  PrefectSecret("SNOWFLAKE_DATABASE")
-    snowflake_warehouse =  PrefectSecret("SNOWFLAKE_WAREHOUSE")
     credentials = get_dbt_credentials(
         user_name=snowflake_user,
         password=snowflake_pass,
         role=snowflake_role,
         account_id=snowflake_accid,
-        database=snowflake_database,
-        warehouse=snowflake_warehouse
     )
 
     dbt_run = dbt(
